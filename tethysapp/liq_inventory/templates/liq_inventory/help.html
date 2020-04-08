@@ -1,0 +1,34 @@
+{% extends "liq_inventory/base.html" %}
+{% load static %}
+{% load tethys_gizmos %}
+
+{% block header_buttons %}
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
+    <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
+  </div>
+{% endblock %}
+
+{% block app_content %}
+
+<h1>Help Page</h1>
+<hr>
+
+<h3>How to Use the App</h3>
+
+<p>The user interacts with the app by adding locations where gravel liquefaction has occured. The
+  data added by the user is added to a table and the map shown on the home page.</p>
+
+  <h3>Adding Data</h3>
+  <p>To add data to the table and the map the user must navigate to the "Add Data" page. Here the
+  user will have the option to add the data. Once the data is added the table and the map will update to reflect the changes.</p>
+
+{% endblock %}
+
+{# Use the after_app_content block for modals #}
+{% block after_app_content %}
+  <!-- Example Modal -->
+
+{% endblock %}
+
+{% block app_actions %}
+{% endblock %}

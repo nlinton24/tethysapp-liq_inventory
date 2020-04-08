@@ -15,10 +15,12 @@
 {% block app_navigation_items %}
 {% url 'liq_inventory:home' as home_url %}
 {% url 'liq_inventory:about' as about_url %}
+{% url 'liq_inventory:help' as help_url %}
 
   <li class="title">App Navigation</li>
   <li class="{% if request.path == home_url %}active{% endif %}"><a href="{{ home_url }}">Home Page</a></li>
   <li class="{% if request.path == about_url %}active{% endif %}"><a href="{{ about_url }}">About the App</a></li>
+  <li class="{% if request.path == help_url %}active{% endif %}"><a href="{{ help_url }}">Help Page</a></li>
 {% endblock %}
 
 {% block app_content %}
