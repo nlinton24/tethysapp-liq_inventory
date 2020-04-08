@@ -72,3 +72,12 @@ def home(request):
     }
 
     return render(request, 'liq_inventory/home.html', context)
+
+@login_required()
+def about(request):
+    """
+    Controller for the background page.
+    """
+    context = {}
+
+    return render(request,'liq_inventory/about.html',context)

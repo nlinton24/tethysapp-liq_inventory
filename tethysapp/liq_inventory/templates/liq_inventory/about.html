@@ -1,0 +1,39 @@
+{% extends "liq_inventory/base.html" %}
+{% load static %}
+{% load tethys_gizmos %}
+
+{% block header_buttons %}
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
+    <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
+  </div>
+{% endblock %}
+
+{% block app_content %}
+
+<h1>Gravel Liquefaction Location App Info </h1>
+<hr>
+
+<h3>Gravel Liquefaction</h3>
+
+<p>Gravel liquefaction is an observed but less common occurance of liquefaction.
+  liquefaction generally occurs is sandy soils. After major earthquakes it is importatn for researchers
+  to identify locations where liquefaction has occured. As part of this identification it is also important
+  that researchers determine the type of soil that liquified. With improved data at sites where gravel Liquefaction
+  has ocured it is possible to better predict where it may occur in the future.</p>
+
+  <h3>App Purpose</h3>
+  <p>The purpose of this app is to provide a place where documented occurances of gravel liquefaction can be stored.
+    The app includes a map where exisiting locations of gravel liquefaction are displayed. It also allows the user
+    to enter new gravel liquefaction sites. The app is intended to be a resource to researchers providing location
+    information of known gravel liquefaction sites. </p>
+    
+{% endblock %}
+
+{# Use the after_app_content block for modals #}
+{% block after_app_content %}
+  <!-- Example Modal -->
+
+{% endblock %}
+
+{% block app_actions %}
+{% endblock %}

@@ -5,47 +5,56 @@
   <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
     <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
   </div>
+
 {% endblock %}
 
 {% block app_content %}
-  <h1>Welcome to your Tethys App!</h1>
-  <p>Take advantage of beautiful typography to organize the content of your app:</p>
-  <h1>Heading 1</h1>
-  <h2>Heading 2</h2>
-  <h3>Heading 3</h3>
-  <h4>Heading 4</h4>
-  <h5>Heading 5</h5>
-  <h6>Heading 6</h6>
+
+<p>My Map</p>
+
+
+<div id="mapid"></div>
+
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+   crossorigin=""></script>
+
+<style>
+#mapid {
+    height: 600px;
+    width: 70%;
+    margin: auto;
+    margin-top: 50px;
+}
+</style>
+
+<script>
+var mymap = L.map('mapid').setView([40.52, -111.86], 1.5);
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoibmxpbnRvbjI0IiwiYSI6ImNrNnUwcnRidTA1Mzkza3FwaDM1aTRocm8ifQ.mqo3juol2aCkmaremutQDQ'
+}).addTo(mymap);
+
+ var layer = L.tileLayer.wms('https://geoserver.hydroshare.org/geoserver/HS-d5a195a8b0ca4453858ca00253c1129b/wms?', {
+            layers: 'GravelLiquefactionLocations',
+            format: 'image/png',
+            transparent: true,
+        }).addTo(mymap);
+
+
+</script>
+
+
 {% endblock %}
 
-{# Use the after_app_content block for modals #}
-{% block after_app_content %}
-  <!-- Example Modal -->
-  <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h5 class="modal-title" id="help-modal-label">Example Modal</h5>
-        </div>
-        <div class="modal-body">
-          <p>You can add custom buttons to the app header using the <code>header_buttons</code> block. Use anchor/link tags for the button and wrap it in a div with the class <code>header-button</code>. For buttons with the gliphyicons, add the <code>glyphicon-button</code> class as well.</p>
-          <p>Ever have trouble using a modal in a Tethys app? Use the <code>after_app_content</code> block for modal content to allow them to function properly. See: <a href="https://getbootstrap.com/javascript/#modals">Bootstrap Modals</a></p>
-          <p>Add tooltips to any element by adding the <code>data-toggle</code>, <code>data-placement</code>, and <code>title</code> attributes to the button. See: <a href="https://getbootstrap.com/javascript/#tooltips">Bootstrap Tooltips</a></p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-        </div>
-      </div>
-    </div>
-  </div>
-{% endblock %}
 
 {% block app_actions %}
-  {% gizmo save_button %}
-  {% gizmo edit_button %}
-  {% gizmo remove_button %}
-  {% gizmo previous_button %}
-  {% gizmo next_button %}
+
 {% endblock %}
