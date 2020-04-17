@@ -1,0 +1,26 @@
+{% extends "liq_inventory/base.html" %}
+{% load static %}
+{% load tethys_gizmos %}
+
+{% block header_buttons %}
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
+    <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
+  </div>
+{% endblock %}
+
+{% block app_content %}
+
+<h1>Add Gravel Liquefaction Sites </h1>
+<hr>
+
+
+{% endblock %}
+
+{# Use the after_app_content block for modals #}
+{% block after_app_content %}
+  <!-- Example Modal -->
+
+{% endblock %}
+
+{% block app_actions %}
+{% endblock %}
