@@ -12,6 +12,14 @@
 
 <h1>Add Gravel Liquefaction Sites </h1>
 <hr>
+<form id="addloc-form" method="post">
+   {% csrf_token %}
+    {% gizmo country_input %}
+    {% gizmo city_input %}
+    {% gizmo lat_input %}
+    {% gizmo long_input %}
+    {% gizmo date_eq_input %}
+  </form>
 
 
 {% endblock %}
@@ -23,4 +31,6 @@
 {% endblock %}
 
 {% block app_actions %}
+{% gizmo cancel_button %}
+{% gizmo add_button %}
 {% endblock %}

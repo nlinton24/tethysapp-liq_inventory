@@ -8,7 +8,7 @@ from tethys_sdk.gizmos import (Button, MapView, TextInput, DatePicker,
 from tethys_sdk.permissions import permission_required, has_permission
 from .model import Site, add_new_site, get_all_sites
 from .app import LiqInventory as app
-
+from tethys_sdk.workspaces import app_workspace
 
 
 @login_required()
@@ -102,16 +102,68 @@ def help(request):
 
     return render(request,'liq_inventory/help.html',context)
 
+@app_workspace
 @login_required()
-def addloc(request):
+def addloc(request, app_workspace):
     """
     Controller for the background page.
     """
 
+    country = ''
+    city = ''
+    lat = ''
+    long = ''
+    date_eq = ''
+
+
+    country_error = ''
+    city_error = ''
+    lat_error = ''
+    long_error = ''
+    date_eq_error = ''
+
+
+    if request.POST and 'add-button' in request.POST:
+        has_errors = False
+        country = request.POST.get('country', None)
+        city = request.POST.get('city', None)
+        lat = request.POST.get('lat', None)
+        long = request.POST.get('long', None)
+        date_eq = request.POST.get('date-eq', None)
+
+
+        if not country:
+            has_errors = True
+            country_error = 'Country is required.'
+
+        if not city:
+            has_errors = True
+            city_error = 'City is required.'
+
+        if not lat:
+            has_errors = True
+            lat_error = 'Lattitude is required.'
+
+        if not long:
+            has_errors = True
+            long_error = 'Longitude is required.'
+
+        if not date_eq:
+            has_errors = True
+            date_eq_error = 'Date of Earthquake is required.'
+
+        if not has_errors:
+            add_new_site(db_directory=app_workspace.path, country=country, city=city, lat=lat, long=long, date_eq=date_eq)
+            return redirect(reverse('liq_inventory:home'))
+
+        messages.error(request, "Please fix errors.")
+
+
+
     country_input = TextInput(
         display_text='Country',
         name='country',
-        initial=name,
+        initial=country,
         error=country_error
     )
 
@@ -119,21 +171,21 @@ def addloc(request):
     city_input = TextInput(
         display_text='City',
         name='city',
-        initial=name,
+        initial=city,
         error=city_error
     )
 
     lat_input = TextInput(
         display_text='Lattitude',
         name='lat',
-        initial=name,
+        initial=lat,
         error=lat_error
     ),
 
     long_input = TextInput(
         display_text='Longitude',
         name='long',
-        initial=name,
+        initial=long,
         error=long_error
     )
 
@@ -154,7 +206,7 @@ def addloc(request):
         name='add-button',
         icon='glyphicon glyphicon-plus',
         style='success',
-        attributes={'form': 'add-dam-form'},
+        attributes={'form': 'add-site-form'},
         submit=True
     )
 
@@ -174,8 +226,6 @@ def addloc(request):
         'cancel_button': cancel_button,
         'can_add_sites': has_permission(request, 'addloc')
     }
-
-
     return render(request,'liq_inventory/addloc.html',context)
 
 @login_required()
