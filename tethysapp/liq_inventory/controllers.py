@@ -13,8 +13,6 @@ def home(request):
     """
     Controller for the app home page.
     """
-
-
     save_button = Button(
         display_text='',
         name='save-button',
@@ -103,25 +101,21 @@ def help(request):
 @login_required()
 def addloc(request, app_workspace):
     """
-    Controller for the Add Dam page.
+    Controller for the Add Site page.
     """
-    # Default Values
     country = ''
     city = ''
     lat = ''
     date_eq = ''
     long = ''
 
-    # Errors
     country_error = ''
     city_error = ''
     lat_error = ''
     date_error = ''
     long_error = ''
 
-    # Handle form submission
     if request.POST and 'add-button' in request.POST:
-        # Get values
         has_errors = False
         country = request.POST.get('country', None)
         city = request.POST.get('city', None)
@@ -129,7 +123,6 @@ def addloc(request, app_workspace):
         date_eq = request.POST.get('date-eq', None)
         long = request.POST.get('long', None)
 
-        # Validate
         if not country:
             has_errors = True
             country_error = 'Country is required.'
@@ -156,7 +149,6 @@ def addloc(request, app_workspace):
 
         messages.error(request, "Please fix errors.")
 
-    # Define form gizmos
     country_input = TextInput(
         display_text='Country',
         name='country',
@@ -240,7 +232,7 @@ def addloc(request, app_workspace):
 @login_required()
 def list_sites(request, app_workspace):
     """
-    Show all dams in a table view.
+    Show all sites in a table view.
     """
     sites = get_all_sites(app_workspace.path)
     table_rows = []
