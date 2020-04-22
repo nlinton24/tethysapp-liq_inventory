@@ -1,14 +1,11 @@
-from django.utils.html import format_html
 from django.contrib import messages
 from django.shortcuts import render, reverse, redirect
 from tethys_sdk.permissions import login_required
 from tethys_sdk.gizmos import (Button, MapView, TextInput, DatePicker,
                                SelectInput, DataTableView, MVDraw, MVView,
                                MVLayer)
-from tethys_sdk.permissions import permission_required, has_permission
-from .model import Site, add_new_site, get_all_sites
-from .app import LiqInventory as app
 from tethys_sdk.workspaces import app_workspace
+from .model import add_new_site, get_all_sites
 
 
 @login_required()
@@ -106,32 +103,33 @@ def help(request):
 @login_required()
 def addloc(request, app_workspace):
     """
-    Controller for the background page.
+    Controller for the Add Dam page.
     """
-
+    # Default Values
     country = ''
     city = ''
     lat = ''
-    long = ''
     date_eq = ''
+    long = ''
 
-
+    # Errors
     country_error = ''
     city_error = ''
     lat_error = ''
+    date_error = ''
     long_error = ''
-    date_eq_error = ''
 
-
+    # Handle form submission
     if request.POST and 'add-button' in request.POST:
+        # Get values
         has_errors = False
         country = request.POST.get('country', None)
         city = request.POST.get('city', None)
         lat = request.POST.get('lat', None)
-        long = request.POST.get('long', None)
         date_eq = request.POST.get('date-eq', None)
+        long = request.POST.get('long', None)
 
-
+        # Validate
         if not country:
             has_errors = True
             country_error = 'Country is required.'
@@ -144,29 +142,27 @@ def addloc(request, app_workspace):
             has_errors = True
             lat_error = 'Lattitude is required.'
 
+        if not date_eq:
+            has_errors = True
+            date_error = 'Date of earthquake is required.'
+
         if not long:
             has_errors = True
             long_error = 'Longitude is required.'
 
-        if not date_eq:
-            has_errors = True
-            date_eq_error = 'Date of Earthquake is required.'
-
         if not has_errors:
-            add_new_site(db_directory=app_workspace.path, country=country, city=city, lat=lat, long=long, date_eq=date_eq)
+            add_new_site(db_directory=app_workspace.path, long=long, country=country, city=city, lat=lat, date_eq=date_eq)
             return redirect(reverse('liq_inventory:home'))
 
         messages.error(request, "Please fix errors.")
 
-
-
+    # Define form gizmos
     country_input = TextInput(
         display_text='Country',
         name='country',
         initial=country,
         error=country_error
     )
-
 
     city_input = TextInput(
         display_text='City',
@@ -180,7 +176,7 @@ def addloc(request, app_workspace):
         name='lat',
         initial=lat,
         error=lat_error
-    ),
+    )
 
     long_input = TextInput(
         display_text='Longitude',
@@ -197,12 +193,24 @@ def addloc(request, app_workspace):
         start_view='decade',
         today_button=True,
         initial=date_eq,
-        error=date_eq_error
+        error=date_error
     )
 
+    initial_view = MVView(
+        projection='EPSG:4326',
+        center=[-98.6, 39.8],
+        zoom=3.5
+    )
+
+    drawing_options = MVDraw(
+        controls=['Modify', 'Delete', 'Move', 'Point'],
+        initial='Point',
+        output_format='GeoJSON',
+        point_color='#FF0000'
+    )
 
     add_button = Button(
-        display_text='Add Site',
+        display_text='Add',
         name='add-button',
         icon='glyphicon glyphicon-plus',
         style='success',
@@ -224,36 +232,37 @@ def addloc(request, app_workspace):
         'long_input': long_input,
         'add_button': add_button,
         'cancel_button': cancel_button,
-        'can_add_sites': has_permission(request, 'addloc')
     }
-    return render(request,'liq_inventory/addloc.html',context)
 
+    return render(request, 'liq_inventory/addloc.html', context)
+
+@app_workspace
 @login_required()
-def list_sites(request):
+def list_sites(request, app_workspace):
     """
-    Show all sites in a table view.
+    Show all dams in a table view.
     """
-    sites = get_all_sites()
+    sites = get_all_sites(app_workspace.path)
     table_rows = []
 
-    table_rows.append(
+    for site in sites:
+        table_rows.append(
             (
-                site.country, site.city,
-                site.lat, site.lat, site.date_eq
+                site['country'], site['city'],
+                site['lat'], site['long'], site['date_eq']
             )
         )
 
     sites_table = DataTableView(
-        column_names=('Country', 'City', 'Lattitude', 'Longitude', 'Earthquake Date'),
+        column_names=('Country', 'City', 'Lattitude', 'Longitude', 'Date of Earthquake'),
         rows=table_rows,
         searching=False,
         orderClasses=False,
-        lengthMenu=[[10, 25, 50, -1], [10, 25, 50, "All"]],
+        lengthMenu=[ [10, 25, 50, -1], [10, 25, 50, "All"] ],
     )
 
     context = {
-        'sites_table': sites_table,
-        'can_add_sites': has_permission(request, 'addloc')
+        'sites_table': sites_table
     }
 
     return render(request, 'liq_inventory/list_sites.html', context)

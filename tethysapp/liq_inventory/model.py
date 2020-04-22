@@ -25,17 +25,28 @@ class Site(Base):
 
 
 
-def get_all_sites():
+def get_all_sites(db_directory):
     """
     Get all persisted dams.
     """
-    # Get connection/session to database
-    Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
-    session = Session()
+    # Write to file in {{db_directory}}/dams/{{uuid}}.json
+    # Make dams dir if it doesn't exist
+    sites_dir = os.path.join(db_directory, 'sites')
+    if not os.path.exists(sites_dir):
+        os.mkdir(sites_dir)
 
-    # Query for all dam records
-    sites = session.query(Site).all()
-    session.close()
+    sites = []
+
+    # Open each file and convert contents to python objects
+    for site_json in os.listdir(sites_dir):
+        # Make sure we are only looking at json files
+        if '.json' not in site_json:
+            continue
+
+        site_json_path = os.path.join(sites_dir, site_json)
+        with open(site_json_path, 'r') as f:
+            site_dict = json.loads(f.readlines()[0])
+            sites.append(site_dict)
 
     return sites
 
@@ -81,7 +92,7 @@ import uuid
 import json
 
 
-def add_new_site(db_directory, name, owner, river, date_built):
+def add_new_site(db_directory, country, city, lat, long, date_eq):
     """
     Persist new dam.
     """
@@ -96,7 +107,7 @@ def add_new_site(db_directory, name, owner, river, date_built):
         'date_eq': date_eq
     }
 
-    dam_json = json.dumps(site_dict)
+    site_json = json.dumps(site_dict)
 
     # Write to file in {{db_directory}}/dams/{{uuid}}.json
     # Make dams dir if it doesn't exist

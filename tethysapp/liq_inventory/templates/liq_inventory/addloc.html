@@ -1,36 +1,19 @@
 {% extends "liq_inventory/base.html" %}
-{% load static %}
 {% load tethys_gizmos %}
 
-{% block header_buttons %}
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
-    <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
-  </div>
-{% endblock %}
-
 {% block app_content %}
-
-<h1>Add Gravel Liquefaction Sites </h1>
-<hr>
-<form id="addloc-form" method="post">
-   {% csrf_token %}
+  <h1>Add Sites</h1>
+  <form id="add-site-form" method="post">
+    {% csrf_token %}
     {% gizmo country_input %}
     {% gizmo city_input %}
     {% gizmo lat_input %}
     {% gizmo long_input %}
     {% gizmo date_eq_input %}
   </form>
-
-
-{% endblock %}
-
-{# Use the after_app_content block for modals #}
-{% block after_app_content %}
-  <!-- Example Modal -->
-
 {% endblock %}
 
 {% block app_actions %}
-{% gizmo cancel_button %}
-{% gizmo add_button %}
+  {% gizmo add_button %}
+  {% gizmo cancel_button %}
 {% endblock %}
