@@ -23,47 +23,31 @@ class Site(Base):
     city = Column(String)
     date_eq = Column(String)
 
-    # Relationships
 
 
-
-def add_new_site(location, name, owner, river, date_built):
-    """
-    Persist new dam.
-    """
-
-    # Create new Dam record
-    new_site = Site(
-        latitude=lat,
-        longitude=long,
-        country=country,
-        city=city,
-        date_eq=date_eq
-    )
-
-    # Get connection/session to database
-    Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
-    session = Session()
-
-    # Add the new dam record to the session
-    session.add(new_site)
-
-    # Commit the session and close the connection
-    session.commit()
-    session.close()
-
-
-def get_all_sites():
+def get_all_sites(db_directory):
     """
     Get all persisted dams.
     """
-    # Get connection/session to database
-    Session = app.get_persistent_store_database('primary_db', as_sessionmaker=True)
-    session = Session()
+    # Write to file in {{db_directory}}/dams/{{uuid}}.json
+    # Make dams dir if it doesn't exist
+    sites_dir = os.path.join(db_directory, 'sites')
+    if not os.path.exists(sites_dir):
+        os.mkdir(sites_dir)
 
-    # Query for all dam records
-    sites = session.query(Site).all()
-    session.close()
+    sites = []
+
+    # Open each file and convert contents to python objects
+    for site_json in os.listdir(sites_dir):
+        # Make sure we are only looking at json files
+        if '.json' not in site_json:
+            continue
+
+        site_json_path = os.path.join(sites_dir, site_json)
+        with open(site_json_path, 'r') as f:
+            site_dict = json.loads(f.readlines()[0])
+            sites.append(site_dict)
+
 
     return sites
 
@@ -103,3 +87,40 @@ def init_primary_db(engine, first_time):
         session.add(site2)
         session.commit()
         session.close()
+
+import os
+import uuid
+import json
+
+
+def add_new_site(db_directory, country, city, lat, long, date_eq):
+    """
+    Persist new dam.
+    """
+    # Serialize data to json
+    new_site_id = uuid.uuid4()
+    site_dict = {
+        'id': str(new_site_id),
+        'country': country,
+        'city': city,
+        'lat': lat,
+        'long': long,
+        'date_eq': date_eq
+    }
+
+    site_json = json.dumps(site_dict)
+
+    # Write to file in {{db_directory}}/dams/{{uuid}}.json
+    # Make dams dir if it doesn't exist
+    sites_dir = os.path.join(db_directory, 'sites')
+    if not os.path.exists(sites_dir):
+        os.mkdir(sites_dir)
+
+    # Name of the file is its id
+    file_name = str(new_site_id) + '.json'
+    file_path = os.path.join(sites_dir, file_name)
+
+    # Write json
+    with open(file_path, 'w') as f:
+        f.write(site_json)
+

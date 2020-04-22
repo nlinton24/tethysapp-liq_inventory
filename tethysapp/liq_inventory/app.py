@@ -30,6 +30,16 @@ class LiqInventory(TethysAppBase):
                 controller='liq_inventory.controllers.home'
             ),
             UrlMap(
+                name='addloc',
+                url='addloc',
+                controller='liq_inventory.controllers.addloc'
+            ),
+            UrlMap(
+                name='list_sites',
+                url='list_sites',
+                controller='liq_inventory.controllers.list_sites'
+            ),
+            UrlMap(
                 name='help',
                 url='help',
                 controller='liq_inventory.controllers.help'
