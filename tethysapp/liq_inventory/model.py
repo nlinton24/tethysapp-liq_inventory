@@ -48,6 +48,7 @@ def get_all_sites(db_directory):
             site_dict = json.loads(f.readlines()[0])
             sites.append(site_dict)
 
+
     return sites
 
 
@@ -122,3 +123,4 @@ def add_new_site(db_directory, country, city, lat, long, date_eq):
     # Write json
     with open(file_path, 'w') as f:
         f.write(site_json)
+
