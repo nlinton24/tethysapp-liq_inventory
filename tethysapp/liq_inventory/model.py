@@ -10,11 +10,10 @@ Base = declarative_base()
 
 class Site(Base):
     """
-    SQLAlchemy Dam DB Model
+    SQLAlchemy Site DB Model
     """
     __tablename__ = 'sites'
 
-    # Columns
     id = Column(Integer, primary_key=True)
     lat = Column(Float)
     long = Column(Float)
@@ -26,7 +25,7 @@ class Site(Base):
 
 def get_all_sites(db_directory):
     """
-    Get all persisted dams.
+    Get all persisted sites.
     """
     sites_dir = os.path.join(db_directory, 'sites')
     if not os.path.exists(sites_dir):
