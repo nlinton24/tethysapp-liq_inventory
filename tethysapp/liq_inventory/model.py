@@ -33,9 +33,7 @@ def get_all_sites(db_directory):
 
     sites = []
 
-    # Open each file and convert contents to python objects
     for site_json in os.listdir(sites_dir):
-        # Make sure we are only looking at json files
         if '.json' not in site_json:
             continue
 
