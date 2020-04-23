@@ -7,27 +7,13 @@ from tethys_sdk.gizmos import (Button, MapView, TextInput, DatePicker,
 from tethys_sdk.workspaces import app_workspace
 from .model import add_new_site, get_all_sites
 
-@app_workspace
 @login_required()
-def home(request, app_workspace):
+def home(request):
     """
     Controller for the app home page.
     """
 
-    sites = get_all_sites(app_workspace.path)
-    table_rows = []
-
-    for site in sites:
-        table_rows.append(
-            (
-                site['lat'], site['long']
-            )
-        )
-
-
-    context = {
-        'table_rows': table_rows,
-    }
+    context = {}
 
     return render(request, 'liq_inventory/home.html', context)
 
